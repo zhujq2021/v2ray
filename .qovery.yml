@@ -1,0 +1,11 @@
+---
+application:
+  name: "v2ray"
+  project: "v2ray"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-v2ray"
+  routes:
+  - application_name: "v2ray"
+    paths:
+    - "/*"
