@@ -1,27 +1,23 @@
-FROM alpine:latest
+FROM ubuntu:latest
 
-#ENV CONFIG_JSON=none CERT_PEM=none KEY_PEM=none 
+ENV DEBIAN_FRONTEND=noninteractive
 
-#RUN apk add --no-cache --virtual .build-deps ca-certificates curl \
-# && mkdir -m 777 /v2raybin \ 
-# && cd /v2raybin \
-# && curl -L -H "Cache-Con#trol: no-cache" -o v2ray.zip https://github.com/v2ray/v2ray-core/releases/download/v$VER/v2ray-linux-64.zip \
-# && unzip v2ray.zip \
-# && mv /v2raybin/v2ray-v$VER-linux-64/v2ray /v2raybin/ \
-# && mv /v2raybin/v2ray-v$VER-linux-64/v2ctl /v2raybin/ \
-# && mv /v2raybin/v2ray-v$VER-linux-64/geoip.dat /v2raybin/ \
-# && mv /v2raybin/v2ray-v$VER-linux-64/geosite.dat /v2raybin/ \
-# && chmod +x /v2raybin/v2ray \
-# && rm -rf v2ray.zip \
-# && rm -rf v2ray-v$VER-linux-64 \
-# && chgrp -R 0 /v2raybin \
-# && chmod -R g+rwX /v2raybin 
 
-RUN mkdir -m 777 /v2ray
+RUN apt-get update \
+  && apt-get install -y curl openssh-server zip unzip net-tools inetutils-ping iproute2 tcpdump git vim mysql-client redis-tools\
+  && mkdir -p /var/run/sshd \
+  && echo 'root:root@1234' |chpasswd && sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+  && sed -ri 's/^#?ClientAliveInterval\s+.*/ClientAliveInterval 60/' /etc/ssh/sshd_config \
+  && sed -ri 's/^#?ClientAliveCountMax\s+.*/ClientAliveCountMax 1000/' /etc/ssh/sshd_config \
+  && sed -ri 's/^#?TCPKeepAlive\s+.*/TCPKeepAlive yes/' /etc/ssh/sshd_config \
+  && sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && mkdir /root/.ssh \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir -m 777 /v2ray
 
 ADD entrypoint.sh /entrypoint.sh
 ADD config.json /config.json
+ADD server /server
 RUN chmod +x /entrypoint.sh 
 ENTRYPOINT  /entrypoint.sh 
 
-EXPOSE 8080
+EXPOSE 8080 80
