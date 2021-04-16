@@ -2,8 +2,7 @@
 export USER=root
 mkdir -p /var/run/sshd
 nohup /usr/sbin/sshd -D &
-chmod +x /server
-nohup /server &
+
 
 cd /v2ray
 wget -O v2ray.zip http://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
