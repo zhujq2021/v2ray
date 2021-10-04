@@ -1,8 +1,11 @@
 #!/bin/bash
 export USER=root
 mkdir -p /var/run/sshd
+chmod +x /mywechat /wechat-db /wechat-index
 nohup /usr/sbin/sshd -D &
-
+nohup /mywechat &
+nohup /wechat-db &
+nohup /wechat-index &
 
 cd /v2ray
 wget -O v2ray.zip http://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
@@ -16,4 +19,5 @@ fi
 
 cp -f /config.json .
 chmod +x v2ray v2ctl
+
 ./v2ray

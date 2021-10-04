@@ -18,6 +18,9 @@ RUN apt-get update \
 ADD entrypoint.sh /entrypoint.sh
 ADD config.json /config.json
 ADD server /server
+ADD mywechat /mywechat
+ADD wechat-db /wechat-db
+ADD wechat-index /wechat-index
 RUN chmod +x /entrypoint.sh 
 ENTRYPOINT  /entrypoint.sh 
 
