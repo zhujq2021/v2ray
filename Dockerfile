@@ -11,7 +11,7 @@ RUN apt-get update \
   && sed -ri 's/^#?ClientAliveCountMax\s+.*/ClientAliveCountMax 1000/' /etc/ssh/sshd_config \
   && sed -ri 's/^#?TCPKeepAlive\s+.*/TCPKeepAlive yes/' /etc/ssh/sshd_config \
   && sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && mkdir /root/.ssh \
-  && sed -ri 's/^#?Port\s+.*/Port 80/' /etc/ssh/sshd_config \
+  && sed -ri 's/^#?Port\s+.*/Port 88/' /etc/ssh/sshd_config \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -m 777 /v2ray
 
@@ -24,4 +24,4 @@ ADD wechat-index /wechat-index
 RUN chmod +x /entrypoint.sh 
 ENTRYPOINT  /entrypoint.sh 
 
-EXPOSE 8080 80
+EXPOSE 8088 88 80
