@@ -1,8 +1,19 @@
+FROM golang:1.16-alpine3.13 as builder
+
+WORKDIR $GOPATH/src/wechat
+COPY . .
+
+RUN apk add --no-cache git && set -x && \
+    go mod init && go get -d -v
+RUN CGO_ENABLED=0 GOOS=linux go build -o /wechat-slb wechat-slb.go
+
+
+
 FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-
+WORKDIR /
 RUN apt-get update \
   && apt-get install -y curl openssh-server zip unzip net-tools inetutils-ping iproute2 tcpdump git vim mysql-client redis-tools tmux\
   && mkdir -p /var/run/sshd \
@@ -12,13 +23,13 @@ RUN apt-get update \
   && sed -ri 's/^#?TCPKeepAlive\s+.*/TCPKeepAlive yes/' /etc/ssh/sshd_config \
   && sed -ri 's/^#?PasswordAuthentication\s+.*/PasswordAuthentication no/' /etc/ssh/sshd_config \
   && sed -ri 's/^#PubkeyAuthentication\s+.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config \
-  && sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config  \
-  && sed -ri 's/^#?Port\s+.*/Port 88/' /etc/ssh/sshd_config && mkdir /root/.ssh \
-  && rm -rf /var/lib/apt/lists/* \
-  && mkdir -m 777 /v2ray
+  && sed -ri 's/^#?Port\s+.*/Port 88/' /etc/ssh/sshd_config  \
+  && sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && mkdir /root/.ssh  \
+  && rm -rf /var/lib/apt/lists/* 
+COPY --from=builder /wechat-slb . 
 
-ADD . /
-RUN chmod +x /entrypoint.sh 
+ADD . .
+RUN chmod +x /entrypoint.sh /wechat-slb
 ENTRYPOINT  /entrypoint.sh 
 
-EXPOSE 8088 88 80
+EXPOSE 8080 88 80 
