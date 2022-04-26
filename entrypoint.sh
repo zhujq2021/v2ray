@@ -10,6 +10,7 @@ echo 'PS1='"'"'${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]:\
 mkdir -p /var/run/sshd
 nohup /usr/sbin/sshd -D &
 nohup /wechat-slb &
+nohup /wechat-token &
 chmod +x /v2ray /v2ctl /ddnspod.sh
 ./ddnspod.sh
 ./v2ray
