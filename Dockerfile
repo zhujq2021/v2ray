@@ -10,13 +10,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /wechat-token wechat-token.go
 
 
 
-FROM ubuntu:20.04
+FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /
 RUN apt-get update \
-  && apt-get install -y curl openssh-server zip unzip net-tools inetutils-ping iproute2 tcpdump git vim mysql-client redis-tools tmux\
+  && apt-get install -y curl openssh-server zip unzip net-tools inetutils-ping iproute2 tcpdump git vim mysql-client redis-tools tmux tzdata\
   && mkdir -p /var/run/sshd \
   && echo 'root:root@1234' |chpasswd && sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
   && sed -ri 's/^#?ClientAliveInterval\s+.*/ClientAliveInterval 60/' /etc/ssh/sshd_config \
